@@ -79,7 +79,6 @@ void check(){
 				strcpy(ac,"REDUCE (S->S*S)");
 				stk[z]='S';
 				stk[z+1]='\0';
-				stk[z+2]='\0';
 				printf("\n$%s\t%s$\t%s",stk,a,ac);
 				i = i-2;
 			    
