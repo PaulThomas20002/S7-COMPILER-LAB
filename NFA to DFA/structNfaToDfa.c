@@ -1,266 +1,177 @@
 #include <stdio.h>
-#include <string.h>
-#define STATES 50
-struct Dstate
-{
-	char name;
-	char StateString[STATES+1];
-	char trans[10];
-	int is_final;
-}Dstates[50];
-struct tran
-{
-	char sym[10];
-	int tostates[50];
-	int notran;
+#include <stdlib.h>
+struct node {
+int st;
+struct node *link;
 };
-struct state
-{
-	int no;
-	struct tran tranlist[50];
+struct node1 {
+int nst[20];
 };
-int stackA[100],stackB[100],Aptr=-1,Bptr=-1;
-struct state States[STATES];
-char temp[STATES+1];
-char inp[10][10];
-int nos,noi,nof,j,k,nods=-1;
-void pushA(int z)
-{
-	stackA[++Aptr]=z;
+void insert(int, char, int);
+int findalpha(char);
+void findfinalstate(void);
+int insertdfastate(struct node1);
+int compare(struct node1, struct node1);
+void printnewstate(struct node1);
+static int set[20], nostate, noalpha, s, notransition, nofinal, start,
+finalstate[20], c, r, buffer[20];
+int complete = -1;
+char alphabet[20];
+static int eclosure[20][20] = {0};
+struct node1 hash[20];
+struct node *transition[20][20] = {NULL};
+void main() {
+int i, j, k, m, t, n, l;
+struct node *temp;
+struct node1 newstate = {0}, tmpstate = {0};
+printf("Enter the number of alphabets?\n");
+printf("NOTE:- [ use letter e as epsilon]\n");
+printf("NOTE:- [e must be last character ,if it is present]\n");
+printf("\nEnter No of alphabets and alphabets?\n");
+scanf("%d", &noalpha);
+getchar();
+for (i = 0; i < noalpha; i++) {
+alphabet[i] = getchar();
+getchar();
 }
-void pushB(int z)
-{
-	stackB[++Bptr]=z;
+printf("Enter the number of states?\n");
+scanf("%d", &nostate);
+printf("Enter the start state?\n");
+scanf("%d", &start);
+printf("Enter the number of final states?\n");
+scanf("%d", &nofinal);
+printf("Enter the final states?\n");
+
+for (i = 0; i < nofinal; i++)
+scanf("%d", &finalstate[i]);
+printf("Enter no of transition?\n");
+scanf("%d", &notransition);
+printf("NOTE:- [Transition is in the format qno alphabet qno]\n");
+printf("NOTE:- [States number must be greater than zero]\n");
+printf("\nEnter transition?\n");
+for (i = 0; i < notransition; i++) {
+scanf("%d %c%d", &r, &c, &s);
+insert(r, c, s);
 }
-int popA()
-{
-	return stackA[Aptr--];
+for (i = 0; i < 20; i++) {
+for (j = 0; j < 20; j++)
+hash[i].nst[j] = 0;
 }
-void copy(int i)
-{
-	char temp[STATES+1]=" ";
-	int k=0;
-	Bptr=-1;
-	strcpy(temp,Dstates[i].StateString);
-	while(temp[k]!='\0')
-	{
-		pushB(temp[k]-'0');
-		k++;
-	}
+complete = -1;
+i = -1;
+printf("\nEquivalent DFA.....\n");
+printf("Trnsitions of DFA\n");
+newstate.nst[start] = start;
+insertdfastate(newstate);
+while (i != complete) {
+i++;
+newstate = hash[i];
+for (k = 0; k < noalpha; k++) {
+c = 0;
+for (j = 1; j <= nostate; j++)
+set[j] = 0;
+for (j = 1; j <= nostate; j++) {
+l = newstate.nst[j];
+if (l != 0) {
+temp = transition[l][k];
+while (temp != NULL) {
+if (set[temp->st] == 0) {
+c++;
+set[temp->st] = temp->st;
 }
-int popB()
-{
-	return stackB[Bptr--];
+temp = temp->link;
 }
-int peekB()
-{
-	return stackA[Bptr];
 }
-int peekA()
-{
-	return stackA[Aptr];
 }
-int seek(int arr[],int ptr,int s)
-{
-	int i;
-	for(i=0;i<=ptr;i++)
-	{
-		if(s==arr[i])
-			return 1;
-	}
-	return 0;
+printf("\n");
+if (c != 0) {
+for (m = 1; m <= nostate; m++)
+tmpstate.nst[m] = set[m];
+insertdfastate(tmpstate);
+printnewstate(newstate);
+printf("%c\t", alphabet[k]);
+printnewstate(tmpstate);
+
+printf("\n");
 }
-void sort()
-{
-	int i,j,temp;
-	for(i=0;i<Bptr;i++)
-	{
-		for(j=0;j<(Bptr-i);j++)
-		{
-			if(stackB[j]>stackB[j+1])
-			{
-				temp=stackB[j];
-				stackB[j]=stackB[j+1];
-				stackB[j+1]=temp;
-			}
-		}
-	}
+else {
+printnewstate(newstate);
+printf("%c\t", alphabet[k]);
+printf("NULL\n");
 }
-void tostring()
-{
-	int i=0;
-	sort();
-	for(i=0;i<=Bptr;i++)
-	{
-		temp[i]=stackB[i]+'0';
-	}
-	temp[i]='\0';
 }
-void display_DTran()
-{
-	int i,j;
-	printf("\n\t\t DFA Transition Table ");
-	printf("\n\t\t -------------------- ");
-	printf("\nStates\tString\tInputs\n ");
-	printf("\t");
-	for(i=0;i<noi;i++)
-	{
-		printf("\t%s",inp[i]);
-	}
-	printf("\n \t\t----------");
-	printf("\n->");
-	for(i=0;i<nods;i++)
-	{
-		
-		if(Dstates[i].is_final==0)
-			if(i==0)
-				printf("%c",Dstates[i].name);
-			else
-				printf("\n%c",Dstates[i].name);
-		else
-			if(i==0)
-				printf("*%c",Dstates[i].name);
-			else
-				printf("\n*%c",Dstates[i].name);
-			
-		printf("\t%s",Dstates[i].StateString);
-		for(j=0;j<noi;j++)
-		{
-			printf("\t%c",Dstates[i].trans[j]);
-		}
-	}
-	printf("\n");
 }
-void move(int st,int j)
-{
-	int ctr=0;
-	while(ctr<States[st].tranlist[j].notran)
-	{
-		pushA(States[st].tranlist[j].tostates[ctr++]);
-	}
+printf("\nStates of DFA:\n");
+for (i = 0; i <= complete; i++)
+printnewstate(hash[i]);
+printf("\n Alphabets:\n");
+for (i = 0; i < noalpha; i++)
+printf("%c\t", alphabet[i]);
+printf("\n Start State:\n");
+printf("q%d", start);
+printf("\nFinal states:\n");
+findfinalstate();
 }
-void lambda_closure(int st)
-{
-	int ctr=0,in_state=st,curst=st,chk;
-	while(Aptr!=-1)
-	{
-		curst=popA();
-		ctr=0;
-		in_state=curst;
-		while(ctr<=States[curst].tranlist[noi].notran)
-		{
-			chk=seek(stackB,Bptr,in_state);
-			if(chk==0)
-				pushB(in_state);
-			in_state=States[curst].tranlist[noi].tostates[ctr++];
-			chk=seek(stackA,Aptr,in_state);
-			if(chk==0 && ctr<=States[curst].tranlist[noi].notran)
-				pushA(in_state);
-		}
-	}
+int insertdfastate(struct node1 newstate) {
+int i;
+for (i = 0; i <= complete; i++) {
+if (compare(hash[i], newstate))
+return 0;
 }
-int main()
-{
-	int final[20],start,fin=0,i;
-	char c,ans,st[20];
-	printf("\nEnter no. of states in NFA : ");
-	scanf("%d",&nos);
-	for(i=0;i<nos;i++)
-	{
-		States[i].no=i;
-	}
-	printf("\nEnter the start state : ");
-	scanf("%d",&start);
-	printf("Enter the no. of final states : ");
-	scanf("%d",&nof);
-	printf("\nEnter the final states : \n");
-	for(i=0;i<nof;i++)
-		scanf("%d",&final[i]);
-	printf("\nEnter the no. of input symbols : ");
-	scanf("%d",&noi);
-	c=getchar();
-	printf("\nEnter the input symbols : \n ");
-	for(i=0;i<noi;i++)
-	{
-		scanf("%s",inp[i]);
-		c=getchar();
-	}
-	inp[i][0]='e';
-	printf("\nEnter the transitions : (-1 to stop)\n");
-	for(i=0;i<nos;i++)
-	{
-		for(j=0;j<=noi;j++)
-		{
-			//States[i].tranlist[j].sym=inp[j];
-			strcpy(States[i].tranlist[j].sym,inp[j]);
-			k=0;
-			ans='y';
-			while(ans=='y')
-			{
-				printf("move(%d,%s) : ",i,inp[j]);
-				scanf("%d",&States[i].tranlist[j].tostates[k++]);
-				if(States[i].tranlist[j].tostates[k-1]==-1)
-				{
-					k--;ans='n';
-					break;
-				}
-			}
-			States[i].tranlist[j].notran=k;
-		}
-	}
- //Conversion
-	i=0;nods=0;fin=0;
-	pushA(start);
-	lambda_closure(peekA());
-	tostring();
-	Dstates[nods].name='A';
-	for(int i=0;i<nof;i++)
-	{
-		if(final[i]==0)
-			Dstates[nods].is_final=1;
-	}
-	nods++;
-	strcpy(Dstates[0].StateString,temp);
-	while(i<nods)
-	{	
-		for(j=0;j<noi;j++)
-		{
-			fin=0;
-			copy(i);
-			while(Bptr!=-1)
-			{
-				move(popB(),j);
-			}
-			while(Aptr!=-1)
-				lambda_closure(peekA());
-			tostring();
-			for(k=0;k<nods;k++)
-			{
-				if((strcmp(temp,Dstates[k].StateString)==0))
-				{
-					Dstates[i].trans[j]=Dstates[k].name;
-					break;
-				}
-			}
-			if(k==nods)
-			{
-				nods++;
-				for(k=0;k<nof;k++)
-				{
-					fin=seek(stackB,Bptr,final[k]);
-					if(fin==1)
-					{
-						Dstates[nods-1].is_final=1;
-						break;
-					}									
-				}
-				strcpy(Dstates[nods-1].StateString,temp);
-				Dstates[nods-1].name='A'+nods-1;
-				Dstates[i].trans[j]=Dstates[nods-1].name;
-			}
-		}
-		i++;
-	}
-	display_DTran();
-	return 0;
+complete++;
+hash[complete] = newstate;
+return 1;
+}
+int compare(struct node1 a, struct node1 b) {
+int i;
+for (i = 1; i <= nostate; i++) {
+if (a.nst[i] != b.nst[i])
+return 0;
+}
+return 1;
+}
+void insert(int r, char c, int s) {
+int j;
+struct node *temp;
+j = findalpha(c);
+if (j == 999) {
+printf("error\n");
+exit(0);
+}
+temp = (struct node *)malloc(sizeof(struct node));
+temp->st = s;
+
+temp->link = transition[r][j];
+transition[r][j] = temp;
+}
+int findalpha(char c) {
+int i;
+for (i = 0; i < noalpha; i++)
+if (alphabet[i] == c)
+return i;
+return (999);
+}
+void findfinalstate() {
+int i, j, k, t;
+for (i = 0; i <= complete; i++) {
+for (j = 1; j <= nostate; j++) {
+for (k = 0; k < nofinal; k++) {
+if (hash[i].nst[j] == finalstate[k]) {
+printnewstate(hash[i]);
+printf("\t");
+j = nostate;
+break;
+}
+}
+}
+}
+}
+void printnewstate(struct node1 state) {
+int j;
+printf("{");
+for (j = 1; j <= nostate; j++) {
+if (state.nst[j] != 0)
+printf("q%d,", state.nst[j]);
+}
+printf("}\t");
 }
