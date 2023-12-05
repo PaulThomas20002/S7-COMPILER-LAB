@@ -69,7 +69,7 @@ ungetc(c,fp);
 lexbuf[b]='\0';
 if((!(lookup(lexbuf)))&&(!iskw(lexbuf)))
 {
-strcpy(symtab[i++],lexbuf);daazzdfvssssAaz
+strcpy(symtab[i++],lexbuf);
 }
 if((k=iskw(lexbuf))!=0)
 {
