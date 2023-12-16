@@ -20,7 +20,19 @@ int main()
 		flag=0;
 		ch=fgetc(input);
 
-		if( ch=='+' || ch== '-' || ch=='*' || ch=='/'|| ch == '=' ){
+		if((ch == '/')){
+			if(ch=getc(input)=='/'){
+				while(ch!='\n'){
+					ch=getc(input);
+				}
+			}
+			else{
+					char c = '/';
+					fprintf(output,"%7d\t\t %7d\t\t Operator\t\t %7c\n",l,t,c);
+					ungetc(ch, input);
+				}
+		}
+		else if( ch=='+' || ch== '-' || ch=='*' || ch == '=' ){
 			fprintf(output,"%7d\t\t %7d\t\t Operator\t\t %7c\n",l,t,ch);
 			t++;
 		}
