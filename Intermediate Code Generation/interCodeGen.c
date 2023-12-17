@@ -68,10 +68,7 @@ void fleft(int x) {
         strcpy(left, "");
         while (str[x] != '+' && str[x] != '-' && str[x] != '*' && str[x] != '/' && str[x] != '=' && str[x] != '\0') {
                 if (str[x] != '$') {
-                        strcpy(temp, left);
-                        strcpy(left, "");
                         strncat(left, & str[x], 1);
-                        strcat(left, temp);
                         str[x] = '$';
                 }
                 x--;
