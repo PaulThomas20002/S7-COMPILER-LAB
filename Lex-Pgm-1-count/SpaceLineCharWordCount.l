@@ -8,7 +8,7 @@ int wc=0, lc=0, cc=0;
 [^\t\n ]+ { wc++;  cc+=yyleng;}
 %%
 
-int main(int argc, char * argv[]) {
+void main() {
         printf("Enter the input:\n");
         yylex();
         printf("\nThe number of lines=%d\n", lc);
