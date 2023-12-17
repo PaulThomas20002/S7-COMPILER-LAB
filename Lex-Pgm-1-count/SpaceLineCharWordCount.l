@@ -1,6 +1,6 @@
 %{
 #include<stdio.h>
-int wc=0,lc=0,cc=0;
+int wc=0, lc=0, cc=0;
 %}
 
 %%
@@ -8,16 +8,13 @@ int wc=0,lc=0,cc=0;
 [^\t\n ]+ { wc++;  cc+=yyleng;}
 %%
 
-int main(int argc ,char* argv[ ])
-{
-printf("Enter the input:\n");
-yylex();
-printf("\nThe number of lines=%d\n",lc);
-printf("The number of words=%d\n",wc);
-printf("The number of characters are=%d\n",cc);
+int main(int argc, char * argv[]) {
+        printf("Enter the input:\n");
+        yylex();
+        printf("\nThe number of lines=%d\n", lc);
+        printf("The number of words=%d\n", wc);
+        printf("The number of characters are=%d\n", cc);
 }
-
-int yywrap( )
-{
-return 1;
+int yywrap() {
+        return 1;
 }
