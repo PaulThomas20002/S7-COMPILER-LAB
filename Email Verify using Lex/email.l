@@ -5,7 +5,7 @@ int flag=0;
 %}
 
 %%
-[a-z . 0-9]+@[a-z]+".com"|".in" { flag=1; }
+[a-zA-Z0-9_]+@[a-zA-Z0-9_]+[.][a-zA-Z0-9_]+ { printf("%s is Valid Email ID", yytext); flag=1; }
 %%
 
 void main(){
