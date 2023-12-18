@@ -27,10 +27,10 @@ int main()
 				}
 			}
 			else{
-					char c = '/';
-					fprintf(output,"%7d\t\t %7d\t\t Operator\t\t %7c\n",l,t,c);
-					ungetc(ch, input);
-				}
+				char c = '/';
+				fprintf(output,"%7d\t\t %7d\t\t Operator\t\t %7c\n",l,t,c);
+				ungetc(ch, input);
+			}
 		}
 		else if( ch=='+' || ch== '-' || ch=='*' || ch == '=' ){
 			fprintf(output,"%7d\t\t %7d\t\t Operator\t\t %7c\n",l,t,ch);
