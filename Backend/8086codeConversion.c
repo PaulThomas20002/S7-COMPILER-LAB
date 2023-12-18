@@ -5,7 +5,7 @@
 void main() {
         char icode[10][30], str[20], opr[10];
         int i = 0;
-        printf("\nEnter the set of intermediate code (terminated by exit):\n");
+        printf("\nEnter the set of intermediate code(Type exit to terminate)\n");
         do {
                 scanf("%s", icode[i]);
         }
