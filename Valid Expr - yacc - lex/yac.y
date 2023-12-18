@@ -28,3 +28,15 @@ int yyerror(char *s)
 printf("\nExpression is invalid");
 exit(0);
 }
+
+/*
+
+save the file as filename.l and filename.y
+compile the yacc code "yacc -d filename.y"
+
+compile the lex code "flex filename.l"
+now compile c file code "cc lex.yy.c y.tab.c -ll"
+execute the file "./a.out"
+
+
+*/
