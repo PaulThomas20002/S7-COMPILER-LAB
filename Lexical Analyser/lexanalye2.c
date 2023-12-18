@@ -62,8 +62,6 @@ int main()
 			
 			for(j=0;j<=12;j++){
 				if(strcmp(str, keyword[j])==0){
-					printf(keyword[j]);
-					printf(" Flag = %d\n", flag);
 					flag=1;
 					break;
 				}
