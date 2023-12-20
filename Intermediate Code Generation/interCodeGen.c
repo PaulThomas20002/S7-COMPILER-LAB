@@ -1,7 +1,5 @@
 #include<stdio.h>
-
 #include<string.h>
-
 #include<stdlib.h>
 
 int i = 1, j = 0, tmpch = 90;
@@ -13,11 +11,10 @@ void fright(int);
 struct exp {
         int pos;
         char op;
-}
-k[15];
+}k[15];
 
 void main() {
-        printf("Enter the Expression :");
+        printf("Input :");
         scanf("%s", str);
         printf("The intermediate code:\n");
         findopr();
@@ -56,7 +53,6 @@ void explore() {
                 printf("\n");
                 i++;
         }
-
         fleft(1);
         fright(1);
         printf("\t%s = %s\n", left, right);
@@ -64,7 +60,6 @@ void explore() {
 
 void fleft(int x) {
         x--;
-        char temp[20];
         strcpy(left, "");
         while (str[x] != '+' && str[x] != '-' && str[x] != '*' && str[x] != '/' && str[x] != '=' && str[x] != '\0') {
                 if (str[x] != '$') {
